@@ -1,12 +1,5 @@
 [
   {
-    "id": "SEATING_GT_200",
-    "condition": {
-      "seating_gt": 200
-    },
-    "requirement": "לעסק עם מעל 200 מקומות ישיבה יש דרישות מיוחדות"
-  },
-  {
     "id": "SEATING_LTE_200",
     "condition": {
       "seating_lte": 200,
