@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: "./server/.env" });
 import express from "express";
 import questionnaireRoutes from "./routers/businessQuestionnaire.js";
 import cors from "cors";

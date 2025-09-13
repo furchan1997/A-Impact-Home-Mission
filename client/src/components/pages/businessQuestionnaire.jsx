@@ -2,8 +2,13 @@ import Input from "../input";
 import { useFormik } from "formik";
 import { questionnaire } from "../../services/businessQuestionnaire";
 import joi from "joi";
+import { useState } from "react";
 
 function BusinessQuestionnaire() {
+  const [report, setReoprt] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isGenerate, setIsGenerate] = useState(false);
+
   const form = useFormik({
     validateOnMount: false,
 
@@ -51,70 +56,94 @@ function BusinessQuestionnaire() {
     },
 
     async onSubmit(data) {
+      setLoading(true);
+      setIsGenerate(false);
       try {
         console.log(data);
         const response = await questionnaire.createQuestionnaire(data);
         console.log(response);
+        setReoprt(response?.data?.aiReport);
+        setLoading(false);
+        if (response.status === 201) {
+          setIsGenerate(true);
+        }
         return response;
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     },
   });
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center">
-      <h1>שאלון עבור בית עסק</h1>
-      <form onSubmit={form.handleSubmit} noValidate autoComplete="off">
-        <Input
-          label={"שם מלא"}
-          id={"fullName"}
-          name={"fullName"}
-          {...form.getFieldProps("fullName")}
-          error={form?.touched?.fullName && form?.errors["fullName"]}
-        />
-        <Input
-          label={"גודל העסק במ''ר"}
-          inputType={"number"}
-          id={"bizSize"}
-          name={"bizSize"}
-          {...form.getFieldProps("bizSize")}
-          error={form?.touched?.bizSize && form?.errors["bizSize"]}
-        />
-        <Input
-          label={"מספר מקומות ישיבה/תפוסה"}
-          id={"seats"}
-          name={"seats"}
-          {...form.getFieldProps("seats")}
-          error={form?.touched?.seats && form?.errors["seats"]}
-        />
-        <Input
-          isCheckBoxInput
-          label={"יש הגשה של בשר/עופות/דגים"}
-          id={"servingFood"}
-          name={"servingFood"}
-          checked={form.values.servingFood}
-          onChange={(e) => form.setFieldValue("servingFood", e.target.checked)}
-        />
-        <Input
-          isCheckBoxInput
-          label={"האם קיימת מערכת גז/גפ''מ"}
-          id={"gas"}
-          name={"gas"}
-          checked={form.values.gas}
-          onChange={(e) => form.setFieldValue("gas", e.target.checked)}
-        />
-        <Input
-          isCheckBoxInput
-          label={"יש הגשה של אלכוהול"}
-          id={"alcohol"}
-          name={"alcohol"}
-          {...form.getFieldProps("alcohol")}
-          checked={form.values.alcohol}
-          onChange={(e) => form.setFieldValue("alcohol", e.target.checked)}
-        />
-        <button type="submit">שלח/י</button>
-      </form>
+    <div className="d-flex flex-column justify-content-center align-items-center ">
+      {!isGenerate && (
+        <>
+          <h1>שאלון עבור בית עסק</h1>
+          <form onSubmit={form.handleSubmit} noValidate autoComplete="off">
+            <Input
+              label={"שם מלא"}
+              id={"fullName"}
+              name={"fullName"}
+              {...form.getFieldProps("fullName")}
+              error={form?.touched?.fullName && form?.errors["fullName"]}
+            />
+            <Input
+              label={"גודל העסק במ''ר"}
+              inputType={"number"}
+              id={"bizSize"}
+              name={"bizSize"}
+              {...form.getFieldProps("bizSize")}
+              error={form?.touched?.bizSize && form?.errors["bizSize"]}
+            />
+            <Input
+              label={"מספר מקומות ישיבה/תפוסה"}
+              id={"seats"}
+              name={"seats"}
+              {...form.getFieldProps("seats")}
+              error={form?.touched?.seats && form?.errors["seats"]}
+            />
+            <Input
+              isCheckBoxInput
+              label={"יש הגשה של בשר/עופות/דגים"}
+              id={"servingFood"}
+              name={"servingFood"}
+              checked={form.values.servingFood}
+              onChange={(e) =>
+                form.setFieldValue("servingFood", e.target.checked)
+              }
+            />
+            <Input
+              isCheckBoxInput
+              label={"האם קיימת מערכת גז/גפ''מ"}
+              id={"gas"}
+              name={"gas"}
+              checked={form.values.gas}
+              onChange={(e) => form.setFieldValue("gas", e.target.checked)}
+            />
+            <Input
+              isCheckBoxInput
+              label={"יש הגשה של אלכוהול"}
+              id={"alcohol"}
+              name={"alcohol"}
+              {...form.getFieldProps("alcohol")}
+              checked={form.values.alcohol}
+              onChange={(e) => form.setFieldValue("alcohol", e.target.checked)}
+            />
+            <button type="submit">שלח/י</button>
+          </form>
+        </>
+      )}
+      {loading && (
+        <div className="alert alert-info w-100 text-center">מייצר דו״ח… </div>
+      )}
+      {isGenerate && (
+        <div className="w-75 mb-5 p-5">
+          <h2 className="text-center fw-bold">דו''ח AI</h2>
+          <p>{report}</p>
+        </div>
+      )}
     </div>
   );
 }
