@@ -3,11 +3,14 @@ import { useFormik } from "formik";
 import { questionnaire } from "../../services/businessQuestionnaire";
 import joi from "joi";
 import { useState } from "react";
+import ReportCard from "../reportCard";
 
 function BusinessQuestionnaire() {
   const [report, setReoprt] = useState("");
+  const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isGenerate, setIsGenerate] = useState(false);
+  const [error, setError] = useState(null);
 
   const form = useFormik({
     validateOnMount: false,
@@ -58,6 +61,7 @@ function BusinessQuestionnaire() {
     async onSubmit(data) {
       setLoading(true);
       setIsGenerate(false);
+      setError(null);
       try {
         console.log(data);
         const response = await questionnaire.createQuestionnaire(data);
@@ -70,6 +74,8 @@ function BusinessQuestionnaire() {
         return response;
       } catch (err) {
         console.log(err);
+        console.log(error);
+        setError(err?.message || "שגיאה, אנא נסה שנית.");
       } finally {
         setLoading(false);
       }
@@ -135,15 +141,12 @@ function BusinessQuestionnaire() {
           </form>
         </>
       )}
-      {loading && (
-        <div className="alert alert-info w-100 text-center">מייצר דו״ח… </div>
-      )}
-      {isGenerate && (
-        <div className="w-75 mb-5 p-5">
-          <h2 className="text-center fw-bold">דו''ח AI</h2>
-          <p>{report}</p>
-        </div>
-      )}
+      <ReportCard
+        aiReport={report}
+        error={error}
+        loading={loading}
+        matchedRules={rules}
+      />
     </div>
   );
 }
