@@ -9,7 +9,7 @@ Content-Type: application/json
 
 
 {
-  "fullName": "Test Biz",
+  "fullName": "Tew",
   "bizSize": 120,
   "seats": 150,
   "alcohol": false,
