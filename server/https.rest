@@ -9,9 +9,9 @@ Content-Type: application/json
 
 
 {
-     "fullName" : "ariel",
-    "bizSize" : "200",
-    "seats" : "100",
+     "fullName" : "שלום",
+    "bizSize" : "12",
+    "seats" : "1200",
     "servingFood" : true,
-    "gas" : false
+    "gas" : true
 }
