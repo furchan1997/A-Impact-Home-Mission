@@ -1,27 +1,39 @@
-function Input({ lable, inputType, isCheckBoxInput, ...rest }) {
+function Input({ label, inputType, isCheckBoxInput, ...rest }) {
   return (
     <div className="mb-3">
       {!isCheckBoxInput ? (
         <>
           <label htmlFor={rest.name} className="form-label">
-            {lable}
+            {label}
           </label>
           <input
             type={inputType}
             {...rest}
-            className="form-control"
+            className={["form-control", rest.error && "is-invalid"]
+              .filter(Boolean)
+              .join(" ")}
             id={rest.id}
+            name={rest.name}
           />
         </>
       ) : (
         <>
-          <lable className="form-check-label">{lable}</lable>
+          <lable className="form-check-label">{label}</lable>
           <input
-            className="form-check-input form-check-lg border border-2 border-dark mx-1"
+            className="form-check-input 
+              form-check-lg border 
+              border-2 
+              border-dark 
+              mx-1"
             type="checkbox"
             id={rest.id}
+            name={rest.name}
+            {...rest}
           />
         </>
+      )}
+      {rest.error && (
+        <div className="invalid-feedback d-block">{rest.error}</div>
       )}
     </div>
   );

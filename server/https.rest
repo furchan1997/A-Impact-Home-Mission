@@ -1,0 +1,17 @@
+@local=http://localhost:5001
+
+GET  {{local}}/api/questionnaire
+
+###
+
+POST  {{local}}/api/questionnaire
+Content-Type: application/json
+
+
+{
+     "fullName" : "ariel",
+    "bizSize" : "200",
+    "seats" : "100",
+    "servingFood" : true,
+    "gas" : false
+}
