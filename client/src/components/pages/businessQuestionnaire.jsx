@@ -2,21 +2,22 @@ import Input from "../input";
 import { useFormik } from "formik";
 import { questionnaire } from "../../services/businessQuestionnaire";
 import joi from "joi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReportCard from "../reportCard";
 
+// רכיב אשר יטפל בחחוית ה-UI עבור השאלון למשתמשים, בו יוצג הדו''ח, שגיאות וטעינות ידידותיות למשתמשים במקרה הצורך
 function BusinessQuestionnaire() {
-  const [report, setReoprt] = useState("");
-  const [rules, setRules] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isGenerate, setIsGenerate] = useState(false);
-  const [error, setError] = useState(null);
+  const [reoprt, setReoprt] = useState(""); // סטטיט שישמור את הד''וח בינה ויציג למשתמש
+  const [rules, setRules] = useState([]); // סטייט שיחזיק את רשימת החוקים שהותאמו מהשרת
+  const [loading, setLoading] = useState(false); // סטייט שיציין האם אנחנו בהתליך שליחה/קבלת תשובה
+  const [isGenerate, setIsGenerate] = useState(false); // קובע האם להציג את השאלון או את הדו''ח שנוצר
+  const [error, setError] = useState(null); // אחסון בסטייט לצורך הודעת שגיאה במידה והקריאה לשרת נכשלה
 
   const form = useFormik({
-    validateOnMount: false,
+    validateOnMount: false, // למען ביצוע ולידציה רק בעת ניסיון השליחה
 
     initialValues: {
-      fullName: "",
+      bizName: "",
       bizSize: 0,
       seats: 0,
       servingFood: false,
@@ -24,11 +25,12 @@ function BusinessQuestionnaire() {
       alcohol: false,
     },
 
+    // ולידצייה בעזרת JOI למען שיפור חווית המשתמש , הצגת הבעיות והשגיאות בצורה מפורטת ובכדי שהתקבלו נתונים רלוונטים להשוואה והיצירת הדו''ח
     validate(data) {
       const schema = joi.object({
-        fullName: joi.string().required().min(2).messages({
-          "string.empty": "שם מלא הוא שדה חובה",
-          "string.min": "שם מלא חייב להכיל לפחות 2 תווים",
+        bizName: joi.string().required().min(2).messages({
+          "string.empty": "שם העסק הוא שדה חובה",
+          "string.min": "שם העסק חייב להכיל לפחות 2 תווים",
         }),
         bizSize: joi.number().min(1).required().messages({
           "number.base": "גודל העסק חייב להיות מספר",
@@ -51,51 +53,52 @@ function BusinessQuestionnaire() {
       if (!error) return null;
 
       for (const detail of error.details) {
-        const path = detail.path[0];
-        errors[path] = detail.message;
+        const path = detail.path[0]; // מחזיר את שם הדשה שכשל
+        errors[path] = detail.message; // מיפוי הודעות השגיאה לדשה המתאים לו
       }
 
       return errors;
     },
 
     async onSubmit(data) {
-      setLoading(true);
-      setIsGenerate(false);
-      setError(null);
+      setLoading(true); // מציין שהתחילה השליחה
+      setIsGenerate(false); // איפוס תצוגת קודמת של הדו''ח
+      setError(null); // מנקה שגיאות קודמות
       try {
-        const response = await questionnaire.createQuestionnaire(data);
+        const response = await questionnaire.createQuestionnaire(data); // שליחת נתונים לשרת
 
-        setRules(response?.data?.matchedRules);
+        setRules(response?.data?.matchedRules); // שמירת החוקים הקשיחים שהתאימו
 
-        setReoprt(response?.data?.aiReport);
+        setReoprt(response?.data?.aiReport); // שמירת הדו''ח שיתקבל מה-AI
         setLoading(false);
         if (response.status === 200) {
-          setIsGenerate(true);
+          setIsGenerate(true); // אם התקבלו הנתונים מהשרת מציג את הדו''ח ומשנה את תצוגת הדפדפן
         }
         return response;
       } catch (err) {
-        setError(err?.message || "שגיאה, אנא נסה שנית.");
+        setError(err?.message || "שגיאה, אנא נסה שנית."); // הצגת שגיאה מהשרת או שגיאה ידנית למקרה הצורך
       } finally {
-        setLoading(false);
+        setLoading(false); // בכל מקרה נסמן שהסתיים תהליך הטעינה
       }
     },
   });
   return (
     <div className="d-flex flex-column justify-content-center align-items-center mb-3">
-      {!isGenerate && (
+      {!isGenerate && ( // אם עדיין לא נוצר דו''ח אז נציג את השאלון
         <>
           <h1>שאלון עבור בית עסק</h1>
           <form onSubmit={form.handleSubmit} noValidate autoComplete="off">
             <Input
-              label={"שם מלא"}
-              id={"fullName"}
-              name={"fullName"}
-              {...form.getFieldProps("fullName")}
-              error={form?.touched?.fullName && form?.errors["fullName"]}
+              lable={"שם העסק"}
+              id={"bizName"}
+              name={"bizName"}
+              {...form.getFieldProps("bizName")} // קישור של השדה ל-FORMIK
+              error={form?.touched?.bizName && form?.errors["bizName"]} // הצגת שגיאה אם קיימת
               required
+              inputType={"text"}
             />
             <Input
-              label={"גודל העסק במ''ר"}
+              lable={"גודל העסק במ''ר"}
               inputType={"number"}
               id={"bizSize"}
               name={"bizSize"}
@@ -104,7 +107,7 @@ function BusinessQuestionnaire() {
               required
             />
             <Input
-              label={"מספר מקומות ישיבה/תפוסה"}
+              lable={"מספר מקומות ישיבה/תפוסה"}
               id={"seats"}
               name={"seats"}
               inputType={"number"}
@@ -114,17 +117,17 @@ function BusinessQuestionnaire() {
             />
             <Input
               isCheckBoxInput
-              label={"יש הגשה של בשר/עופות/דגים"}
+              lable={"יש הגשה של בשר/עופות/דגים"}
               id={"servingFood"}
               name={"servingFood"}
-              checked={form.values.servingFood}
-              onChange={(e) =>
-                form.setFieldValue("servingFood", e.target.checked)
+              checked={form.values.servingFood} // ערך נוכח מ-FORMIK
+              onChange={
+                (e) => form.setFieldValue("servingFood", e.target.checked) // עדכון ידני של ערך הצ'קבוקס
               }
             />
             <Input
               isCheckBoxInput
-              label={"האם קיימת מערכת גז/גפ''מ"}
+              lable={"האם קיימת מערכת גז/גפ''מ"}
               id={"gas"}
               name={"gas"}
               checked={form.values.gas}
@@ -132,7 +135,7 @@ function BusinessQuestionnaire() {
             />
             <Input
               isCheckBoxInput
-              label={"יש הגשה של אלכוהול"}
+              lable={"יש הגשה של אלכוהול"}
               id={"alcohol"}
               name={"alcohol"}
               {...form.getFieldProps("alcohol")}
@@ -146,13 +149,13 @@ function BusinessQuestionnaire() {
         </>
       )}
       <ReportCard
-        aiReport={report}
-        error={error}
-        loading={loading}
-        matchedRules={rules}
+        aiReport={reoprt} // תוכן הדו''ח שהגיע מהשרת
+        error={error} // הצגת הודעות השגיאה במידה ויש
+        loading={loading} // הצגת טעינה אם הבקשה מתעכבת
+        matchedRules={rules} // הצגת החוקים שהותאמו לעסק
       />
     </div>
   );
 }
 
-export default BusinessQuestionnaire;
+export default BusinessQuestionnaire; // ייצוא של הרכיב בלבד

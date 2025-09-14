@@ -1,8 +1,8 @@
-import { useState } from "react";
 import "./App.css";
 import BusinessQuestionnaire from "./components/pages/businessQuestionnaire";
 import Summary from "./components/pages/summary";
-
+// רכיב השורש של האפליקצייה
+// כאן נטענים הרכיבים הראשיים
 function App() {
   return (
     <>

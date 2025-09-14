@@ -1,9 +1,12 @@
 import axios from "axios";
 import apiConfig from "./../../config.json";
 
+// API CONFIG ישמש כבסיס לכתובת עבור כל הבקשות שישלף מתוך  BASE URL
+// לדוגמה: במקום לכתוב בכל קריאה http://localhost:5001/api/questionnaire,
+// מספיק לכתוב "/api/questionnaire"
 axios.defaults.baseURL = apiConfig.apiUrl;
 
-export const httpsServise = {
-  get: axios.get,
-  post: axios.post,
+export const httpsService = {
+  get: axios.get, // מאפשר קבלת נתונים
+  post: axios.post, // מאפשר שליחת נתונים
 };

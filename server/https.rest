@@ -1,15 +1,16 @@
 @local=http://localhost:5001
 
-GET  {{local}}/api/questionnaire
+###  
+# דוגמה לבדיקת נקודת הקצה דרך REST CLIENT / HTTPS.REST
+# שולחת בקשת POST ליצירת שאלון עסקים ומחזירה דו"ח מותאם אישית.
+# ניתן להוסיף ?boom=1 לסימולציית כשל (בדיקת טיפול בשגיאת 500).
 
-###
-
-POST  {{local}}/api/questionnaire?boom=1
+POST  {{local}}/api/questionnaire
 Content-Type: application/json
 
 
 {
-  "fullName": "Tw",
+  "bizName": "Your biz name",
   "bizSize": 120,
   "seats": 150,
   "alcohol": false,
