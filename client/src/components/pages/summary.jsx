@@ -1,6 +1,6 @@
 function Summary() {
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center text-center vh-100 bg-light p-4">
+    <div className="d-flex flex-column justify-content-center align-items-center text-center bg-light p-4">
       <div
         className="card shadow-lg p-4 border-0"
         style={{ maxWidth: "720px" }}

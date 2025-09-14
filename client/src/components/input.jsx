@@ -5,6 +5,7 @@ function Input({ label, inputType, isCheckBoxInput, ...rest }) {
         <>
           <label htmlFor={rest.name} className="form-label">
             {label}
+            {rest.required && <span className="text-danger ms-1">*</span>}
           </label>
           <input
             type={inputType}
@@ -18,7 +19,9 @@ function Input({ label, inputType, isCheckBoxInput, ...rest }) {
         </>
       ) : (
         <>
-          <lable className="form-check-label">{label}</lable>
+          <lable className="form-check-label" htmlFor={rest.name}>
+            {label}
+          </lable>
           <input
             className="form-check-input 
               form-check-lg border 

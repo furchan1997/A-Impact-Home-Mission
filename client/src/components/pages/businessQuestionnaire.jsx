@@ -2,7 +2,7 @@ import Input from "../input";
 import { useFormik } from "formik";
 import { questionnaire } from "../../services/businessQuestionnaire";
 import joi from "joi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReportCard from "../reportCard";
 
 function BusinessQuestionnaire() {
@@ -63,9 +63,10 @@ function BusinessQuestionnaire() {
       setIsGenerate(false);
       setError(null);
       try {
-        console.log(data);
         const response = await questionnaire.createQuestionnaire(data);
-        console.log(response);
+
+        setRules(response?.data?.matchedRules);
+
         setReoprt(response?.data?.aiReport);
         setLoading(false);
         if (response.status === 201) {
@@ -73,17 +74,14 @@ function BusinessQuestionnaire() {
         }
         return response;
       } catch (err) {
-        console.log(err);
-        console.log(error);
         setError(err?.message || "שגיאה, אנא נסה שנית.");
       } finally {
         setLoading(false);
       }
     },
   });
-
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center ">
+    <div className="d-flex flex-column justify-content-center align-items-center mb-3">
       {!isGenerate && (
         <>
           <h1>שאלון עבור בית עסק</h1>
@@ -94,6 +92,7 @@ function BusinessQuestionnaire() {
               name={"fullName"}
               {...form.getFieldProps("fullName")}
               error={form?.touched?.fullName && form?.errors["fullName"]}
+              required
             />
             <Input
               label={"גודל העסק במ''ר"}
@@ -102,13 +101,16 @@ function BusinessQuestionnaire() {
               name={"bizSize"}
               {...form.getFieldProps("bizSize")}
               error={form?.touched?.bizSize && form?.errors["bizSize"]}
+              required
             />
             <Input
               label={"מספר מקומות ישיבה/תפוסה"}
               id={"seats"}
               name={"seats"}
+              inputType={"number"}
               {...form.getFieldProps("seats")}
               error={form?.touched?.seats && form?.errors["seats"]}
+              required
             />
             <Input
               isCheckBoxInput
@@ -137,7 +139,9 @@ function BusinessQuestionnaire() {
               checked={form.values.alcohol}
               onChange={(e) => form.setFieldValue("alcohol", e.target.checked)}
             />
-            <button type="submit">שלח/י</button>
+            <button className="btn btn-primary fw-bold" type="submit">
+              שלח/י
+            </button>
           </form>
         </>
       )}
