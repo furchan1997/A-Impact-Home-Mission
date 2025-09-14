@@ -64,7 +64,6 @@ npm run dev
 ```bash
 npm run extract
 
----
 ```
 
 ### קובץ Environment
