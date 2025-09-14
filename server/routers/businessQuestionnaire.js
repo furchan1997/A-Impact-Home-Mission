@@ -1,14 +1,11 @@
 import { Router } from "express";
-import { matchRules } from "../matchRules.js";
+import { matchRules } from "../../data/matchRules.js";
 import { buildReport } from "../../server/services/aiReport.js";
 import { businessQuestionnaireSchema } from "../validation/businessQuestionnaireSchema.js";
 const router = Router();
 
 router.post("/", async (req, res, next) => {
   try {
-    if (req.query.boom === "1") {
-      throw new Error("Forced failure for 500 test");
-    }
     const { error } = businessQuestionnaireSchema(req.body);
     if (error) {
       const errors = error.details.map((detail) => ({
@@ -27,7 +24,7 @@ router.post("/", async (req, res, next) => {
       matchedRules,
     });
 
-    return res.status(200).json({
+    res.status(200).json({
       matchedRules,
       aiReport,
     });
