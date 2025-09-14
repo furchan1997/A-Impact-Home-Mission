@@ -26,6 +26,16 @@
    ---
    ```
 
+### הפקת קובץ JSON מתוך PDF
+
+כדי לטעון את החוקים ממסמך PDF ולתרגם אותם לפורמט מובנה (JSON) לשימוש במערכת, יש להריץ את הפקודה:
+
+```bash
+npm run extract
+
+---
+```
+
 ## 📦 Dependencies
 
 ### Backend
