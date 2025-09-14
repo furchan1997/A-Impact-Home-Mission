@@ -7,6 +7,5 @@ import apiConfig from "./../../config.json";
 axios.defaults.baseURL = apiConfig.apiUrl;
 
 export const httpsService = {
-  get: axios.get, // מאפשר קבלת נתונים
   post: axios.post, // מאפשר שליחת נתונים
 };
