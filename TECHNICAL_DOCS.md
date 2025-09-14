@@ -22,11 +22,12 @@ flowchart TD
   A[משתמש] -->|ממלא שאלון| B[Frontend - React]
   B -->|POST /api/questionnaire| C[Backend - Express]
   C -->|בדיקת חוקים| D[Rules JSON]
-  C -->|יצירת דו"ח| E[Gemini API]
+  C -->|יצירת דוח| E[Gemini API]
   D --> C
   E --> C
-  C -->|דו"ח מותאם אישית| B
-  B -->|תצוגת דו"ח| A
+  C -->|דוח מותאם אישית| B
+  B -->|תצוגת דוח| A
+
 ```
 
 ---
@@ -52,7 +53,30 @@ flowchart TD
 
 ```json
 {
-  "matchedRules": [{ "id": 1, "requirement": "דרישת כיבוי אש" }],
+  "matchedRules": [
+    {
+      "id": "SEATING_LTE_200",
+      "condition": {
+        "seating_lte": 200,
+        "alcohol": false
+      },
+      "requirement": "עסק עד 200 מקומות ישיבה ללא מכירת/הגשת/צריכת אלכוהול פטור מדרישות מסוימות"
+    },
+    {
+      "id": "FEATURE_HOT_PREP",
+      "condition": {
+        "features": ["meat", "fish"]
+      },
+      "requirement": "לבשל בשר/עופות/דגים עד חימום מלא (72°C למשך 2 דקות בנקודה הקרה), לקרר במהירות אם מוגש קר, ולאחסן בטמפרטורות מתאימות"
+    },
+    {
+      "id": "FEATURE_GAS_LPG",
+      "condition": {
+        "features": ["gas"]
+      },
+      "requirement": "מערכת גפ\"מ וציוד נלווים במצב תקין ומתוחזק; לשמור בעסק אישורים (מטפים לפי ת\"י 129/1, בדיקת חשמל/תאורות חירום)."
+    }
+  ],
   "aiReport": "העסק עומד ברוב הדרישות, מומלץ להשלים את אישור כיבוי האש..."
 }
 ```
@@ -83,19 +107,26 @@ flowchart TD
 ```json
 [
   {
-    "id": 1,
-    "requirement": "דרישת כיבוי אש",
-    "condition": { "seating_lte": 200 }
+    "id": "SEATING_LTE_200",
+    "condition": {
+      "seating_lte": 200,
+      "alcohol": false
+    },
+    "requirement": "עסק עד 200 מקומות ישיבה ללא מכירת/הגשת/צריכת אלכוהול פטור מדרישות מסוימות"
   },
   {
-    "id": 2,
-    "requirement": "רישיון משרד הבריאות",
-    "condition": { "servingFood": true }
+    "id": "FEATURE_HOT_PREP",
+    "condition": {
+      "features": ["meat", "fish"]
+    },
+    "requirement": "לבשל בשר/עופות/דגים עד חימום מלא (72°C למשך 2 דקות בנקודה הקרה), לקרר במהירות אם מוגש קר, ולאחסן בטמפרטורות מתאימות"
   },
   {
-    "id": 3,
-    "requirement": "אישור מערכת גז",
-    "condition": { "gas": true }
+    "id": "FEATURE_GAS_LPG",
+    "condition": {
+      "features": ["gas"]
+    },
+    "requirement": "מערכת גפ\"מ וציוד נלווים במצב תקין ומתוחזק; לשמור בעסק אישורים (מטפים לפי ת\"י 129/1, בדיקת חשמל/תאורות חירום)."
   }
 ]
 ```
@@ -104,13 +135,24 @@ flowchart TD
 
 ```javascript
 {
-  bizName: string().required().min(2),
-  bizSize: number().min(1).required(),
-  seats: number().min(0).required(),
-  servingFood: boolean().required(),
-  gas: boolean().required(),
-  alcohol: boolean().required()
-}
+        bizName: joi.string().required().min(2).messages({
+          "string.empty": "שם העסק הוא שדה חובה",
+          "string.min": "שם העסק חייב להכיל לפחות 2 תווים",
+        }),
+        bizSize: joi.number().min(1).required().messages({
+          "number.base": "גודל העסק חייב להיות מספר",
+          "number.min": "גודל העסק לא יכול להיות שלילי או שווה ל-0",
+          "any.required": "גודל העסק הוא שדה חובה",
+        }),
+        seats: joi.number().min(0).required().messages({
+          "number.base": "מספר מקומות חייב להיות מספר",
+          "number.min": "מספר מקומות לא יכול להיות שלילי",
+          "any.required": "מספר מקומות הוא שדה חובה",
+        }),
+        servingFood: joi.boolean().required(),
+        gas: joi.boolean().required(),
+        alcohol: joi.boolean().required(),
+      }
 ```
 
 ---

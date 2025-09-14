@@ -10,7 +10,7 @@ Content-Type: application/json
 
 
 {
-  "bizName": "Your biz name",
+  "bizName": "מסעדת טעים",
   "bizSize": 120,
   "seats": 150,
   "alcohol": false,
