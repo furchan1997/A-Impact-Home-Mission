@@ -69,7 +69,7 @@ function BusinessQuestionnaire() {
 
         setReoprt(response?.data?.aiReport);
         setLoading(false);
-        if (response.status === 201) {
+        if (response.status === 200) {
           setIsGenerate(true);
         }
         return response;

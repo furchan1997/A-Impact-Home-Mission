@@ -4,12 +4,12 @@ GET  {{local}}/api/questionnaire
 
 ###
 
-POST  {{local}}/api/questionnaire
+POST  {{local}}/api/questionnaire?boom=1
 Content-Type: application/json
 
 
 {
-  "fullName": "Tew",
+  "fullName": "Tw",
   "bizSize": 120,
   "seats": 150,
   "alcohol": false,

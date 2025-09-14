@@ -11,6 +11,14 @@ app.use(express.json());
 // Routes
 app.use("/api/questionnaire", questionnaireRoutes);
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Internal Server Error",
+    error: err.message || "Something went wrong",
+  });
+});
+
 // Start server
 const PORT = 5001;
 app.listen(PORT, () => {
