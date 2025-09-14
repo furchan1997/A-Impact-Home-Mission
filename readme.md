@@ -36,6 +36,18 @@ npm run extract
 ---
 ```
 
+### קובץ Environment
+
+המערכת מוגדרת לחפש קובץ `.env` בתוך תיקיית `server`.  
+יש ליצור קובץ כזה (או להעתיק את `example.env`) ולמלא בו את המפתח האישי:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+
+
+---
+```
+
 ## 📦 Dependencies
 
 ### Backend
