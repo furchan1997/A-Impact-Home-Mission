@@ -34,9 +34,11 @@
 npm install
 npm run dev
 
----
-שרת ה־API יאזין בברירת מחדל בכתובת: http://localhost:5001
 ```
+
+---
+
+שרת ה־API יאזין בברירת מחדל בכתובת: http://localhost:5001
 
 3. התקנת צד לקוח (Frontend)
 
